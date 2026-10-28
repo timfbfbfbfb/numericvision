@@ -52,6 +52,17 @@ RGB_PURPLE = 240, 0, 159
 RGB_TEAL = 255, 255, 0
 
 
+def detect_box_sequences_from_mat(original_image, roi_contour=None):
+    """Analyzes image contours and detects sequences of seven-segment digit boxes."""
+    filtered_image = apply_filters(original_image)
+    filtered_image = cv2.convertScaleAbs(filtered_image, alpha=1.0)
+
+    contours, hierarchy = cv2.findContours(filtered_image, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    bag = Bag(filtered_image, contours, hierarchy[0], roi_contour)
+
+    return bag.sequences
+
+
 def detect_box_sequences(image_path, roi_contour=None):
     """Analyzes image contours and detects sequences of seven-segment digit boxes."""
     assert os.path.isfile(image_path), "File [%s] doesn't exist!" % image_path
